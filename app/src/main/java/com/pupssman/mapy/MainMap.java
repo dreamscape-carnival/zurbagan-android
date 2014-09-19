@@ -2,21 +2,39 @@ package com.pupssman.mapy;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.koushikdutta.async.http.AsyncHttpClient;
+import com.koushikdutta.async.http.WebSocket;
 
 public class MainMap extends FragmentActivity {
+
+    private final String TAG = "MainMap";
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        final String webSocketUrl = "ws://192.168.1.14:8000/connection/websocket";
+
         setContentView(R.layout.activity_main_map);
         setUpMapIfNeeded();
+        Log.i(TAG, "About to setup callback");
+        AsyncHttpClient.getDefaultInstance().websocket(webSocketUrl, null, new AsyncHttpClient.WebSocketConnectCallback() {
+            @Override
+            public void onCompleted(Exception ex, WebSocket webSocket) {
+                Log.i(TAG, "Websocket onCompleted, about to send!");
+                webSocket.send("Hello, world!");
+                Log.i(TAG, "Websocket done sending!");
+            }
+        });
+        Log.i(TAG, "Callback setup done");
     }
 
     @Override
