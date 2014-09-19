@@ -8,6 +8,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.koushikdutta.async.ByteBufferList;
+import com.koushikdutta.async.DataEmitter;
+import com.koushikdutta.async.callback.DataCallback;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.WebSocket;
 
@@ -21,20 +24,39 @@ public class MainMap extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // This should point to a Centrifuge's websocket connection endpoint
         final String webSocketUrl = "ws://192.168.1.14:8000/connection/websocket";
 
         setContentView(R.layout.activity_main_map);
         setUpMapIfNeeded();
-        Log.i(TAG, "About to setup callback");
+        Log.i(TAG, "About to setup websocket");
         AsyncHttpClient.getDefaultInstance().websocket(webSocketUrl, null, new AsyncHttpClient.WebSocketConnectCallback() {
             @Override
             public void onCompleted(Exception ex, WebSocket webSocket) {
+                if (ex != null) {
+                    Log.e(TAG, "Exception happened", ex);
+                    return;
+                }
                 Log.i(TAG, "Websocket onCompleted, about to send!");
-                webSocket.send("Hello, world!");
+                webSocket.send("{}");  // this is a valid JSON data, te he he he
                 Log.i(TAG, "Websocket done sending!");
+
+                webSocket.setStringCallback(new WebSocket.StringCallback() {
+                    public void onStringAvailable(String s) {
+                        Log.i(TAG, "I got a string: " + s);
+                    }
+                });
+                webSocket.setDataCallback(new DataCallback() {
+                    @Override
+                    public void onDataAvailable(DataEmitter emitter, ByteBufferList bb) {
+                        Log.i(TAG, "I got some data!");
+                        bb.recycle();
+                    }
+                });
+                Log.i(TAG, "Websocket done callback configuration!");
             }
         });
-        Log.i(TAG, "Callback setup done");
+        Log.i(TAG, "Websocket setup done");
     }
 
     @Override
