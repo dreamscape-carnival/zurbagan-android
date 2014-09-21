@@ -1,9 +1,10 @@
-package com.pupssman.mapy;
+package com.dsc.zubragan.android;
 
-import android.support.v4.app.FragmentActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 
+import android.support.v4.app.FragmentActivity;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -23,7 +24,6 @@ public class MainMap extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // This should point to a Centrifuge's websocket connection endpoint
         final String webSocketUrl = "ws://192.168.1.14:8000/connection/websocket";
 
