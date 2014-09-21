@@ -5,7 +5,7 @@ android {
     buildToolsVersion "20"
 
     defaultConfig {
-        applicationId "com.dsc.zurbagan.android"
+        applicationId "org.dsc.zurbagan.android"
         minSdkVersion 17
         targetSdkVersion 20
         versionCode 1

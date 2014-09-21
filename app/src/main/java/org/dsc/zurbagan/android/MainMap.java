@@ -1,4 +1,4 @@
-package com.dsc.zurbagan.android;
+package org.dsc.zurbagan.android;
 
 
 import android.os.Bundle;
